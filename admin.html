@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5f0">
+  <title>Quản trị · Atelier Gương</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-page">
+  <section class="admin-login" id="admin-login" hidden>
+    <a class="wordmark" href="/" aria-label="Atelier Gương"><span class="mark">A</span><span>ATELIER <b>GƯƠNG</b><small>BACK OFFICE</small></span></a>
+    <span class="eyebrow">KHU VỰC QUẢN TRỊ</span>
+    <h1>Chào mừng<br><em>trở lại.</em></h1>
+    <p>Đăng nhập để quản lý cửa hàng Atelier Gương.</p>
+    <form id="admin-login-form">
+      <label>Tên đăng nhập<input name="username" autocomplete="username" required></label>
+      <label>Mật khẩu<input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="button button-dark" type="submit">ĐĂNG NHẬP <span>→</span></button>
+      <div class="admin-message" id="login-message" role="status"></div>
+    </form>
+    <a class="back-store" href="/">← Quay lại cửa hàng</a>
+  </section>
+
+  <div class="admin-shell" id="admin-shell" hidden>
+    <aside class="admin-sidebar">
+      <a class="wordmark" href="/" aria-label="Atelier Gương"><span class="mark">A</span><span>ATELIER <b>GƯƠNG</b><small>BACK OFFICE</small></span></a>
+      <div class="sidebar-label">CỬA HÀNG</div>
+      <button class="sidebar-link active" type="button" data-view="dashboard"><span>▦</span> Tổng quan</button>
+      <button class="sidebar-link" type="button" data-view="products"><span>◇</span> Sản phẩm</button>
+      <button class="sidebar-link" type="button" data-view="categories"><span>▤</span> Danh mục</button>
+      <button class="sidebar-link" type="button" data-view="orders"><span>▧</span> Đơn hàng</button>
+      <button class="sidebar-link" type="button" data-view="customers"><span>♙</span> Khách hàng</button>
+      <button class="sidebar-link" type="button" data-view="employees"><span>♧</span> Nhân viên</button>
+      <button class="sidebar-link" type="button" data-view="coupons"><span>%</span> Khuyến mãi</button>
+      <button class="sidebar-link" type="button" data-view="statistics"><span>▥</span> Thống kê</button>
+      <a class="sidebar-store" href="/">↗ <span>Xem cửa hàng</span></a>
+      <div class="sidebar-account"><span class="admin-avatar">A</span><span><b id="admin-username">Quản trị viên</b><small>Quản trị cửa hàng</small></span><button type="button" id="admin-logout" aria-label="Đăng xuất" title="Đăng xuất">↗</button></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header"><div><span class="eyebrow">ATELIER / BACK OFFICE</span><h1 id="page-title">Tổng quan</h1></div><time id="today-date"></time></header>
+      <section id="dashboard-view" class="admin-view">
+        <div class="dashboard-intro"><div><span class="eyebrow">TỔNG QUAN CỬA HÀNG</span><h2>Chào ngày mới.</h2></div><p>Dữ liệu cập nhật trực tiếp từ cửa hàng.</p></div>
+        <div class="metric-grid" id="metric-grid" aria-live="polite"><div class="metric-skeleton"></div><div class="metric-skeleton"></div><div class="metric-skeleton"></div><div class="metric-skeleton"></div><div class="metric-skeleton revenue-skeleton"></div></div>
+        <div class="dashboard-note"><span>✳</span><p>Số liệu kinh doanh được tổng hợp từ dữ liệu đơn hàng và sản phẩm đang hoạt động.</p><button type="button" id="refresh-dashboard" title="Làm mới số liệu">Làm mới ↻</button></div>
+      </section>
+
+      <section id="products-view" class="admin-view" hidden>
+        <div class="products-heading"><div><span class="eyebrow">DANH MỤC / KHO HÀNG</span><h2>Danh sách sản phẩm</h2></div><button class="button button-dark" type="button" id="add-product">＋ Thêm sản phẩm</button></div>
+        <div class="product-toolbar">
+          <label class="admin-search"><span>⌕</span><input id="product-search" type="search" placeholder="Tìm theo tên, mã, thương hiệu..." aria-label="Tìm sản phẩm"></label>
+          <select id="product-category" aria-label="Lọc danh mục"><option value="">Tất cả danh mục</option></select>
+          <select id="product-status" aria-label="Lọc trạng thái"><option value="active">Đang kinh doanh</option><option value="inactive">Ngừng kinh doanh</option><option value="all">Tất cả trạng thái</option></select>
+          <select id="product-sort" aria-label="Sắp xếp sản phẩm"><option value="newest">Mới cập nhật</option><option value="name-asc">Tên A → Z</option><option value="name-desc">Tên Z → A</option><option value="price-asc">Giá thấp → cao</option><option value="price-desc">Giá cao → thấp</option><option value="stock-asc">Tồn kho thấp</option><option value="stock-desc">Tồn kho cao</option><option value="sku-asc">Mã sản phẩm</option><option value="category">Danh mục</option></select>
+        </div>
+        <div class="product-table-wrap" id="product-table-wrap" aria-busy="true"><table class="admin-products-table"><thead><tr><th>SẢN PHẨM</th><th>DANH MỤC / LOẠI</th><th>GIÁ BÁN</th><th>TỒN KHO</th><th>TRẠNG THÁI</th><th></th></tr></thead><tbody id="product-rows"></tbody></table></div>
+        <div class="table-footer"><span id="product-count">Đang tải sản phẩm...</span><nav id="product-pagination" aria-label="Phân trang"></nav></div>
+      </section>
+      <section id="categories-view" class="admin-view" hidden>
+        <div class="products-heading"><div><span class="eyebrow">DANH MỤC / CỬA HÀNG</span><h2>Quản lý danh mục</h2></div><button class="button button-dark" type="button" id="add-category">＋ Thêm danh mục</button></div>
+        <div class="product-toolbar category-toolbar"><label class="admin-search"><span>⌕</span><input id="category-search" type="search" placeholder="Tìm tên danh mục..." aria-label="Tìm danh mục"></label></div>
+        <div class="product-table-wrap"><table class="admin-products-table"><thead><tr><th>TÊN DANH MỤC</th><th>SẢN PHẨM</th><th></th></tr></thead><tbody id="category-rows"></tbody></table></div>
+        <div class="table-footer"><span id="category-count">Đang tải danh mục...</span></div>
+      </section>
+      <section id="orders-view" class="admin-view" hidden>
+        <div class="products-heading"><div><span class="eyebrow">ĐƠN HÀNG / VẬN HÀNH</span><h2>Quản lý đơn hàng</h2></div></div>
+        <div class="product-toolbar order-toolbar">
+          <label class="admin-search"><span>⌕</span><input id="order-search" type="search" placeholder="Mã đơn, khách hàng, điện thoại..." aria-label="Tìm đơn hàng"></label>
+          <select id="order-status-filter" aria-label="Lọc trạng thái"><option value="">Tất cả trạng thái</option><option>Chờ xác nhận</option><option>Đã xác nhận</option><option>Đang chuẩn bị</option><option>Đang giao</option><option>Đã giao</option><option>Đã hủy</option></select>
+        </div>
+        <div class="product-table-wrap"><table class="admin-products-table admin-orders-table"><thead><tr><th>MÃ ĐƠN HÀNG</th><th>KHÁCH HÀNG</th><th>NGÀY ĐẶT</th><th>TỔNG TIỀN</th><th>ĐỊA CHỈ GIAO HÀNG</th><th>THANH TOÁN</th><th>TRẠNG THÁI</th></tr></thead><tbody id="order-rows"></tbody></table></div>
+        <div class="table-footer"><span id="order-count">Đang tải đơn hàng...</span><nav id="order-pagination" aria-label="Phân trang đơn hàng"></nav></div>
+      </section>
+      <section id="customers-view" class="admin-view" hidden>
+        <div class="products-heading"><div><span class="eyebrow">KHÁCH HÀNG / TÀI KHOẢN</span><h2>Quản lý khách hàng</h2></div></div>
+        <div class="product-toolbar customer-toolbar">
+          <label class="admin-search"><span>⌕</span><input id="customer-search" type="search" placeholder="Tên, email hoặc số điện thoại..." aria-label="Tìm khách hàng"></label>
+          <select id="customer-status-filter" aria-label="Lọc trạng thái khách hàng"><option value="all">Tất cả tài khoản</option><option value="active">Đang hoạt động</option><option value="locked">Đã khóa</option></select>
+        </div>
+        <div class="product-table-wrap"><table class="admin-products-table admin-customers-table"><thead><tr><th>KHÁCH HÀNG</th><th>SỐ ĐIỆN THOẠI</th><th>NGÀY ĐĂNG KÝ</th><th>ĐƠN HÀNG</th><th>TRẠNG THÁI</th><th></th></tr></thead><tbody id="customer-rows"></tbody></table></div>
+        <div class="table-footer"><span id="customer-count">Đang tải khách hàng...</span><nav id="customer-pagination" aria-label="Phân trang khách hàng"></nav></div>
+      </section>
+      <section id="employees-view" class="admin-view" hidden>
+        <div class="products-heading"><div><span class="eyebrow">NHÂN SỰ / ATELIER</span><h2>Quản lý nhân viên</h2></div><button class="button button-dark" type="button" id="add-employee">＋ Thêm nhân viên</button></div>
+        <div class="product-toolbar employee-toolbar">
+          <label class="admin-search"><span>⌕</span><input id="employee-search" type="search" placeholder="Tên, mã, email, chức vụ..." aria-label="Tìm nhân viên"></label>
+          <select id="employee-status-filter" aria-label="Lọc trạng thái nhân viên"><option value="all">Tất cả trạng thái</option><option>Đang làm việc</option><option>Đã nghỉ việc</option></select>
+        </div>
+        <div class="product-table-wrap"><table class="admin-products-table admin-employees-table"><thead><tr><th>NHÂN VIÊN</th><th>CHỨC VỤ</th><th>LƯƠNG</th><th>NGÀY VÀO LÀM</th><th>TRẠNG THÁI</th><th></th></tr></thead><tbody id="employee-rows"></tbody></table></div>
+        <div class="table-footer"><span id="employee-count">Đang tải nhân viên...</span><nav id="employee-pagination" aria-label="Phân trang nhân viên"></nav></div>
+      </section>
+      <section id="coupons-view" class="admin-view" hidden>
+        <div class="products-heading"><div><span class="eyebrow">CHIẾN DỊCH / BÁN HÀNG</span><h2>Mã khuyến mãi</h2></div><button class="button button-dark" type="button" id="add-coupon">＋ Tạo mã</button></div>
+        <div class="product-toolbar coupon-toolbar">
+          <label class="admin-search"><span>⌕</span><input id="coupon-search" type="search" placeholder="Tìm mã hoặc tên chương trình..." aria-label="Tìm chương trình"></label>
+          <select id="coupon-status-filter" aria-label="Lọc trạng thái"><option value="all">Tất cả trạng thái</option><option value="active">Đang bật</option><option value="inactive">Đã tắt</option></select>
+        </div>
+        <div class="product-table-wrap"><table class="admin-products-table admin-coupons-table"><thead><tr><th>MÃ / CHƯƠNG TRÌNH</th><th>MỨC GIẢM</th><th>THỜI GIAN</th><th>ĐÃ DÙNG</th><th>TRẠNG THÁI</th><th></th></tr></thead><tbody id="coupon-rows"></tbody></table></div>
+        <div class="table-footer"><span id="coupon-count">Đang tải mã khuyến mãi...</span></div>
+      </section>
+      <section id="statistics-view" class="admin-view" hidden>
+        <div class="products-heading statistics-heading"><div><span class="eyebrow">BÁO CÁO / KINH DOANH</span><h2>Thống kê doanh thu</h2></div><label class="statistics-year">Năm<select id="statistics-year" aria-label="Năm thống kê"></select></label></div>
+        <div class="statistics-metrics" id="statistics-metrics" aria-live="polite"></div>
+        <div class="statistics-chart-grid">
+          <section class="statistics-chart"><header><div><span class="eyebrow">30 NGÀY GẦN NHẤT</span><h3>Doanh thu theo ngày</h3></div></header><div class="chart-bars daily-bars" id="daily-chart"></div></section>
+          <section class="statistics-chart"><header><div><span class="eyebrow">NĂM ĐANG CHỌN</span><h3>Doanh thu theo tháng</h3></div></header><div class="chart-bars monthly-bars" id="monthly-chart"></div></section>
+        </div>
+        <div class="statistics-lower-grid"><section class="statistics-chart"><header><div><span class="eyebrow">TÍCH LŨY</span><h3>Doanh thu theo năm</h3></div></header><div id="yearly-chart" class="yearly-list"></div></section>
+          <section class="statistics-chart"><header><div><span class="eyebrow">THEO SỐ LƯỢNG ĐÃ BÁN</span><h3>Sản phẩm bán chạy</h3></div></header><div id="best-sellers" class="best-seller-list"></div></section>
+        </div>
+      </section>
+      <div class="admin-toast" id="admin-toast" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <section class="customer-detail-modal" id="customer-detail-modal" role="dialog" aria-modal="true" aria-labelledby="customer-detail-title" hidden>
+    <button class="editor-backdrop" type="button" data-customer-detail-close aria-label="Đóng thông tin khách hàng"></button>
+    <div class="customer-detail-panel"><header class="editor-header"><div><span class="eyebrow">KHÁCH HÀNG / HỒ SƠ</span><h2 id="customer-detail-title">Thông tin khách hàng</h2></div><button type="button" class="editor-close" data-customer-detail-close aria-label="Đóng">×</button></header><div id="customer-detail-content"></div></div>
+  </section>
+
+  <section class="product-editor employee-editor" id="employee-editor" role="dialog" aria-modal="true" aria-labelledby="employee-editor-title" hidden>
+    <button class="editor-backdrop" type="button" data-employee-editor-close aria-label="Đóng biểu mẫu"></button>
+    <div class="editor-panel"><header class="editor-header"><div><span class="eyebrow">NHÂN SỰ / ATELIER</span><h2 id="employee-editor-title">Thêm nhân viên</h2></div><button type="button" class="editor-close" data-employee-editor-close aria-label="Đóng">×</button></header>
+      <form id="employee-form"><div class="employee-fields">
+        <label>Mã nhân viên<input name="employeeCode" maxlength="30" required placeholder="NV-001"></label>
+        <label>Họ và tên<input name="fullName" maxlength="160" required></label>
+        <label>Email<input name="email" type="email" maxlength="254" required></label>
+        <label>Số điện thoại<input name="phone" maxlength="24" required></label>
+        <label>Chức vụ<input name="position" maxlength="120" required></label>
+        <label>Lương (₫)<input name="salary" type="number" min="0" step="1000" required></label>
+        <label>Ngày vào làm<input name="hireDate" type="date" required></label>
+        <label>Trạng thái<select name="status"><option>Đang làm việc</option><option>Đã nghỉ việc</option></select></label>
+      </div><div class="editor-message" id="employee-editor-message" role="status"></div><footer class="editor-actions"><button class="button button-outline" type="button" data-employee-editor-close>Hủy</button><button class="button button-dark" type="submit" id="save-employee">Lưu nhân viên <span>→</span></button></footer></form>
+    </div>
+  </section>
+
+  <section class="product-editor coupon-editor" id="coupon-editor" role="dialog" aria-modal="true" aria-labelledby="coupon-editor-title" hidden>
+    <button class="editor-backdrop" type="button" data-coupon-editor-close aria-label="Đóng biểu mẫu"></button>
+    <div class="editor-panel"><header class="editor-header"><div><span class="eyebrow">CHIẾN DỊCH / MÃ ƯU ĐÃI</span><h2 id="coupon-editor-title">Tạo mã giảm giá</h2></div><button type="button" class="editor-close" data-coupon-editor-close aria-label="Đóng">×</button></header>
+      <form id="coupon-form"><div class="coupon-fields">
+        <label>Mã giảm giá<input name="code" maxlength="40" required placeholder="GUONG10" autocapitalize="characters"></label>
+        <label>Tên chương trình<input name="programName" maxlength="160" required placeholder="Giảm 10% đơn hàng"></label>
+        <label>Loại giảm giá<select name="discountType"><option value="percent">Phần trăm (%)</option><option value="fixed">Số tiền (₫)</option></select></label>
+        <label>Giá trị giảm<input name="discountValue" type="number" min="0.01" step="0.01" required></label>
+        <label>Ngày bắt đầu<input name="startsAt" type="date" required></label>
+        <label>Ngày kết thúc<input name="endsAt" type="date" required></label>
+        <label>Số lượng mã<input name="quantity" type="number" min="1" step="1" required></label>
+        <label>Trạng thái<select name="status"><option value="active">Đang bật</option><option value="inactive">Đã tắt</option></select></label>
+      </div><div class="editor-message" id="coupon-editor-message" role="status"></div><footer class="editor-actions"><button class="button button-outline" type="button" data-coupon-editor-close>Hủy</button><button class="button button-dark" type="submit" id="save-coupon">Lưu mã <span>→</span></button></footer></form>
+    </div>
+  </section>
+
+  <section class="product-editor category-editor" id="category-editor" role="dialog" aria-modal="true" aria-labelledby="category-editor-title" hidden>
+    <button class="editor-backdrop" type="button" data-category-editor-close aria-label="Đóng biểu mẫu"></button>
+    <div class="editor-panel"><header class="editor-header"><div><span class="eyebrow">DANH MỤC / CỬA HÀNG</span><h2 id="category-editor-title">Thêm danh mục</h2></div><button type="button" class="editor-close" data-category-editor-close aria-label="Đóng">×</button></header>
+      <form id="category-form"><label class="category-name-field">Tên danh mục<input name="name" maxlength="100" required placeholder="Ví dụ: Gương phòng khách"></label><div class="editor-message" id="category-editor-message" role="status"></div><footer class="editor-actions"><button class="button button-outline" type="button" data-category-editor-close>Hủy</button><button class="button button-dark" type="submit" id="save-category">Lưu danh mục <span>→</span></button></footer></form>
+    </div>
+  </section>
+
+  <section class="product-editor" id="product-editor" role="dialog" aria-modal="true" aria-labelledby="editor-title" hidden>
+    <button class="editor-backdrop" type="button" data-editor-close aria-label="Đóng biểu mẫu"></button>
+    <div class="editor-panel"><header class="editor-header"><div><span class="eyebrow">KHO HÀNG / SẢN PHẨM</span><h2 id="editor-title">Thêm sản phẩm</h2></div><button type="button" class="editor-close" data-editor-close aria-label="Đóng">×</button></header>
+      <form id="product-form">
+        <div class="editor-fields">
+          <label>Mã sản phẩm<input name="sku" maxlength="40" placeholder="AG-0011" required></label>
+          <label>Tên sản phẩm<input name="name" maxlength="200" required></label>
+          <label>Danh mục<select name="category" id="product-category-input" required><option value="">Chọn danh mục</option></select></label>
+          <label>Loại gương<input name="type" maxlength="100" required></label>
+          <label>Thương hiệu<input name="brand" maxlength="120" value="Atelier Gương" required></label>
+          <label>Hình dáng<input name="shape" maxlength="60" placeholder="Gương oval" required></label>
+          <label>Chất liệu<input name="material" maxlength="120" placeholder="Kính Bỉ, khung gỗ sồi" required></label>
+          <label>Kích thước<input name="size" maxlength="80" placeholder="60 × 90 cm" required></label>
+          <label>Màu sắc / hoàn thiện<input name="color" maxlength="120" placeholder="Khung champagne" required></label>
+          <label>Giá gốc (₫)<input name="price" type="number" min="0" step="1000" required></label>
+          <label>Giảm giá (%)<input name="discountPercent" type="number" min="0" max="100" step="0.1" value="0"><small>Nhập 0 nếu không giảm giá</small></label>
+          <label>Số lượng tồn kho<input name="stock" type="number" min="0" step="1" required></label>
+          <label>Không gian phù hợp<input name="space" maxlength="80" placeholder="Phòng khách"></label>
+          <label>Nhãn sản phẩm<select name="badge"><option value="BÁN CHẠY">Bán chạy</option><option value="HÀNG MỚI">Hàng mới</option><option value="BÌNH THƯỜNG">Bình thường</option></select></label>
+          <label>Trạng thái<select name="status"><option value="active">Đang kinh doanh</option><option value="inactive">Ngừng kinh doanh</option></select></label>
+          <label class="image-upload-field">Hình ảnh<input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG hoặc WebP · tối đa 5 MB</small></label>
+          <label class="image-url-field">URL hình ảnh<input name="image" type="url" placeholder="https://... hoặc tải ảnh lên" required></label>
+          <div class="image-preview" id="image-preview"><span>Ảnh xem trước</span></div>
+          <label class="gallery-field">Ảnh bổ sung <small>Mỗi URL một dòng, không bắt buộc</small><textarea name="gallery" rows="3" placeholder="https://..."></textarea></label>
+          <label class="description-field">Mô tả<textarea name="description" maxlength="1200" rows="4" required></textarea></label>
+        </div>
+        <div class="editor-message" id="editor-message" role="status"></div>
+        <footer class="editor-actions"><button class="button button-outline" type="button" data-editor-close>Hủy</button><button class="button button-dark" type="submit" id="save-product">Lưu sản phẩm <span>→</span></button></footer>
+      </form>
+    </div>
+  </section>
+  <script src="admin.js" defer></script>
+</body>
+</html>
